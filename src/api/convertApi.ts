@@ -3,21 +3,15 @@ import { Response } from 'express-serve-static-core';
 import { convertToRoman } from "../service/numberConverter";
 import { FailableResponse, RomanConversionRequest } from "./convertApiModel";
 
-export const getRomanConversion = (query: ParsedUrlQuery, response: Response) => {
+export const getRomanConversion = (query: ParsedUrlQuery): FailableResponse<string> => {
     const {mapQueryError, apiRequestModel} = mapQueryToRequestModel(query);
     if (mapQueryError !== undefined) {
-        response.status(400).send(mapQueryError);
-        return;
+        return {error: {code: 400, errorDescription: mapQueryError}};
     }
-    const {error, responseData} = romanConvert(apiRequestModel!);
-    if (error !== undefined) {
-        response.status(error.code).send(error.errorDescription);
-    } else {
-        response.status(200).send(responseData);
-    }
+    return romanConvert(apiRequestModel!);
 }
 
-const mapQueryToRequestModel = (query: ParsedUrlQuery): {mapQueryError?: string, apiRequestModel?: RomanConversionRequest} => {
+export const mapQueryToRequestModel = (query: ParsedUrlQuery): {mapQueryError?: string, apiRequestModel?: RomanConversionRequest} => {
     if (query.input === undefined) {
         return {mapQueryError: 'You must provide a number'};
     }
@@ -27,7 +21,7 @@ const mapQueryToRequestModel = (query: ParsedUrlQuery): {mapQueryError?: string,
     return {apiRequestModel: {input: query.input}}
 }
 
-const romanConvert = (request: RomanConversionRequest): FailableResponse<string> => {
+export const romanConvert = (request: RomanConversionRequest): FailableResponse<string> => {
     const input = request.input;
     const number = parseFloat(input);    
 
