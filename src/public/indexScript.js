@@ -1,5 +1,3 @@
-
-
 $(function() {
 
     const eventUrl = '/events';
@@ -29,15 +27,7 @@ $(function() {
         const url = `/convert/roman?input=${$('#inputNumber').val()}`;
         $.ajax({
             url: url,
-            type: 'GET',
-            /*success: function(data){ 
-                $('#response').css('color', 'black');
-                $('#response').text(data);
-            },
-            error: function(data) {
-                $('#response').css('color', 'red');
-                $('#response').text(data.responseText);
-            }*/
+            type: 'GET'
         });
     });
 });
